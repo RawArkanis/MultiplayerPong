@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiplayerPong", "MultiplayerPong\MultiplayerPong.vcxproj", "{2BFEA5AA-4373-4BE3-A044-E071FC0F0B3C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RawGameLib", "RawGameLib\RawGameLib.vcxproj", "{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BFEA5AA-4373-4BE3-A044-E071FC0F0B3C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2BFEA5AA-4373-4BE3-A044-E071FC0F0B3C}.Debug|Win32.Build.0 = Debug|Win32
+		{2BFEA5AA-4373-4BE3-A044-E071FC0F0B3C}.Release|Win32.ActiveCfg = Release|Win32
+		{2BFEA5AA-4373-4BE3-A044-E071FC0F0B3C}.Release|Win32.Build.0 = Release|Win32
+		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Debug|Win32.Build.0 = Debug|Win32
+		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Release|Win32.ActiveCfg = Release|Win32
+		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
