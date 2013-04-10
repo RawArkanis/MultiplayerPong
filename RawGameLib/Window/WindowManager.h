@@ -5,7 +5,7 @@
 
 namespace RGL {
 
-    class WindowManager
+    class WindowManager // TODO Corrigir os retornos, e criar o RGLManager
     {
     public:
         WindowManager();
@@ -22,7 +22,7 @@ namespace RGL {
         SDL_Rect Box();
 
     private:
-        bool _isInitialized;
+        static bool _isInitialized;
 
         std::unique_ptr<SDL_Window, void (*)(SDL_Window *)> _window;
         std::unique_ptr<SDL_Renderer,  void (*)(SDL_Renderer *)> _renderer;

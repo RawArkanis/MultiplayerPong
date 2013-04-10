@@ -1,6 +1,7 @@
 #include "Program.h"
 
 #include <Window/WindowManager.h>
+#include <Input/InputManager.h>
 #include <Scene/SceneManager.h>
 
 #include "Scene/GameScene.h"
@@ -12,20 +13,24 @@ int Program::Main(const std::vector<std::string> &args)
 	int exit = false;
     std::shared_ptr<WindowManager> window(new WindowManager());
 
-    window->Initialize(GAME_NAME, SCREEN_WIDTH, SCREEN_WIDTH);
+    window->Initialize(GAME_NAME, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	InputManager input;
 
 	std::shared_ptr<Scene> gameScene(new GameScene(std::weak_ptr<WindowManager>(window), "GameScene")); 
 
 	SceneManager sceneManager;
 	sceneManager.AddScene(gameScene);
+	sceneManager.ChangeCurrentScene("GameScene");
 
-	while (!exit)
+	while (!input.MustQuit())
 	{
+		input.Update();
 		sceneManager.Update(0.0f);
 
 		sceneManager.Draw();
 
-		_sleep(1000);
+		SDL_Delay(500);
 	}
 
     window->Finish();

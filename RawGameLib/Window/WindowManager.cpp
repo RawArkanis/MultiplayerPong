@@ -2,9 +2,10 @@
 
 namespace RGL {
 
+	bool WindowManager::_isInitialized = false;
+
     WindowManager::WindowManager()
-        : _isInitialized(false),
-        _window(std::unique_ptr<SDL_Window, void (*)(SDL_Window *)>(nullptr, SDL_DestroyWindow)),
+        : _window(std::unique_ptr<SDL_Window, void (*)(SDL_Window *)>(nullptr, SDL_DestroyWindow)),
         _renderer(std::unique_ptr<SDL_Renderer, void (*)(SDL_Renderer *)>(nullptr, SDL_DestroyRenderer)),
         _box(SDL_Rect())
     {}
@@ -28,6 +29,8 @@ namespace RGL {
         _renderer.reset(SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
         if (_renderer == nullptr)
             return 3;
+
+		SDL_SetRenderDrawColor(_renderer.get(), 0, 0, 0, 255);
 
         SDL_Rect box = { 0, 0, width, height };
         _box = box;
