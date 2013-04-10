@@ -2,22 +2,22 @@
 
 namespace RGL {
 
-    State::State(const std::string &name, const StartCallback &startCallback,
-                                     const UpdateCallback &updateCallback,
-                                     const StopCallback &stopCallback)
+    State::State(const std::string &name,
+		const StartCallback &startCallback,
+        const UpdateCallback &updateCallback,
+        const StopCallback &stopCallback)
+		: _name(name),
+		_startCallback(startCallback),
+		_updateCallback(updateCallback),
+		_stopCallback(stopCallback)
     {
-        _name = name;
-
-        _startCallback = startCallback;
-        _updateCallback = updateCallback;
-        _stopCallback = stopCallback;
     }
 
     State::~State()
     {
     }
 
-    std::string State::getName()
+    std::string State::Name() const
     {
         return _name;
     }

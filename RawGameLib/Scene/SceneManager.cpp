@@ -11,44 +11,57 @@ namespace RGL {
     {
     }
 
-    void SceneManager::addScene(std::shared_ptr<Scene> scene)
+    void SceneManager::AddScene(std::shared_ptr<Scene> scene)
     {
-        _sceneList[scene->getName()] = scene;
+        _sceneList[scene->Name()] = scene;
     }
 
-    void SceneManager::removeScene(const std::string &name)
+    void SceneManager::RemoveScene(const std::string &name)
     {
         _sceneList.erase(name);
     }
 
-    void SceneManager::changeCurrentScene(const std::string &name)
+    bool SceneManager::ChangeCurrentScene(const std::string &name)
     {
-	    _currentSceneName = name;
+		if (!SceneExists(name))
+			return false;
+
+		_currentSceneName = name;
+			
+		return true;
     }
 
-    std::shared_ptr<Scene> SceneManager::getCurrentScene()
+    std::shared_ptr<Scene> SceneManager::CurrentScene()
     {
         return _sceneList[_currentSceneName];
     }
 
-    std::shared_ptr<Scene> SceneManager::getScene(const std::string &name)
+    std::shared_ptr<Scene> SceneManager::GetScene(const std::string &name)
     {
+		if (!SceneExists(name))
+			return nullptr;
+
         return _sceneList[name];
     }
 
-    void SceneManager::update(float delta)
+	bool SceneManager::SceneExists(const std::string &name)
+	{
+		return _sceneList.find(name) != _sceneList.end();
+	}
+
+    void SceneManager::Update(float delta)
     {
 	    if (!_currentSceneName.empty())
         {
-            _sceneList[_currentSceneName]->update(delta);
+            _sceneList[_currentSceneName]->Update(delta);
         }
     }
 
-    void SceneManager::draw()
+    void SceneManager::Draw()
     {
         if (!_currentSceneName.empty())
         {
-            _sceneList[_currentSceneName]->draw();
+            _sceneList[_currentSceneName]->Draw();
         }
     }
 

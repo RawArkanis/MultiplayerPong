@@ -12,22 +12,22 @@ namespace RGL {
         _stateMap.clear();
     }
 
-    void StateManager::addState(std::shared_ptr<State> state)
+    void StateManager::AddState(std::shared_ptr<State> state)
     {
-        _stateMap[state->getName()] = state;
+        _stateMap[state->Name()] = state;
     }
 
-    void StateManager::removeState(const std::string &name)
+    void StateManager::RemoveState(const std::string &name)
     {
         _stateMap.erase(name);
     }
 
-    std::shared_ptr<State> StateManager::getState(const std::string &name)
+    std::shared_ptr<State> StateManager::GetState(const std::string &name)
     {
         return _stateMap[name];
     }
  
-    bool StateManager::changeState(const std::string &name)
+    bool StateManager::ChangeState(const std::string &name)
     {
         if (!_stateMap[name])
             return false;
@@ -43,7 +43,7 @@ namespace RGL {
         return true;
     }
 
-    void StateManager::update(float delta)
+    void StateManager::Update(float delta)
     {
         if (_currentState != "")
             _stateMap[_currentState]->update(delta);

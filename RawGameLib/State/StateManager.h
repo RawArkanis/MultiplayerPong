@@ -13,14 +13,14 @@ namespace RGL {
         StateManager();
         ~StateManager();
 
-        void addState(std::shared_ptr<State> state);
-        void removeState(const std::string &name);
+        void AddState(std::shared_ptr<State> state);
+        void RemoveState(const std::string &name);
 
-        std::shared_ptr<State> getState(const std::string &name);
+        std::shared_ptr<State> GetState(const std::string &name);
 
-        bool changeState(const std::string &name);
+        bool ChangeState(const std::string &name);
     
-        void update(float delta);
+        void Update(float delta);
     
     private:
         std::map<std::string, std::shared_ptr<State> > _stateMap;

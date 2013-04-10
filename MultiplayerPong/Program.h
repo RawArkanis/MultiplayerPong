@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <Window\WindowManager.h>
-
 #include "Common.h"
 
 class Program

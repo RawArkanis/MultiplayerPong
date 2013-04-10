@@ -14,18 +14,19 @@ namespace RGL {
     class State
     {
     public:
-        State(const std::string &name, const StartCallback &startCallback = nullptr,
+        State(const std::string &name,
+			const StartCallback &startCallback = nullptr,
             const UpdateCallback &updateCallback = nullptr,
             const StopCallback &stopCallback = nullptr);
         ~State();
     
-        std::string getName();
+        std::string Name() const;
     
         void start();
         void update(float delta);
         void stop();
     
-    private:
+    protected:
         std::string _name;
 
         StartCallback _startCallback;
