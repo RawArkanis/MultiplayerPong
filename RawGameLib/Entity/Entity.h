@@ -5,19 +5,22 @@
 
 namespace RGL {
 
-	class WindowManager;
+	class RenderManager;
 
 	class Entity
 	{
 	public:
-		Entity(std::weak_ptr<WindowManager> window, const SDL_Rect &rect);
+		Entity(std::weak_ptr<RenderManager> render, const SDL_Rect &rect);
 		~Entity();
 	
 		SDL_Rect Rect() const;
 		void Rect(const SDL_Rect &rect);
 
-	private:
-		std::weak_ptr<WindowManager> _window;
+		virtual void Update(double delta) = 0;
+		virtual void Draw() = 0;
+
+	protected:
+		std::weak_ptr<RenderManager> _render;
 
 		SDL_Rect _rect;
 	};

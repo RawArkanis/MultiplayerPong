@@ -2,8 +2,8 @@
 
 namespace RGL {
 
-	Entity::Entity(std::weak_ptr<WindowManager> window, const SDL_Rect &rect)
-		: _window(window),
+	Entity::Entity(std::weak_ptr<RenderManager> render, const SDL_Rect &rect)
+		: _render(render),
 		_rect(rect)
 	{
 	}

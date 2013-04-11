@@ -1,6 +1,7 @@
 #include "RenderManager.h"
 
 #include "../Window/WindowManager.h"
+#include "../Container/Surface.h"
 
 namespace RGL
 {
@@ -41,6 +42,13 @@ namespace RGL
         _isInitialized = false;
 
         return R_OK;
+    }
+
+    SDL_Texture *RenderManager::CreateTextureFromSurface(std::weak_ptr<Surface> surface)
+    {
+        auto surf = surface.lock();
+
+        return SDL_CreateTextureFromSurface(_renderer.get(), surf.get()->SDLSurface());
     }
 
     ReturnValue RenderManager::Draw(SDL_Texture *texture, const SDL_Rect &sourceRect, const SDL_Rect &destRect)

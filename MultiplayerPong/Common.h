@@ -5,7 +5,7 @@
 
 const std::string GAME_NAME = "RawMaze";
 
-const unsigned int SCREEN_WIDTH = 640;
-const unsigned int SCREEN_HEIGHT = 480;
+const unsigned int SCREEN_WIDTH = 800;
+const unsigned int SCREEN_HEIGHT = 600;
 
 #endif

@@ -7,6 +7,7 @@ namespace RGL
 {
     
     class WindowManager;
+    class Surface;
 
     class RenderManager
     {
@@ -16,6 +17,8 @@ namespace RGL
 
         ReturnValue Initialize(std::shared_ptr<WindowManager> window);
         ReturnValue Finish();
+
+        SDL_Texture *CreateTextureFromSurface(std::weak_ptr<Surface> surface);
 
         ReturnValue Draw(SDL_Texture *texture, const SDL_Rect &sourceRect, const SDL_Rect &destRect);
     

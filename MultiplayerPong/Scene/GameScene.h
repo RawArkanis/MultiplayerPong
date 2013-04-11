@@ -3,16 +3,20 @@
 
 #include <Scene/Scene.h>
 
-using namespace RGL;
+#include "../Common.h"
+#include "../Entity/Square.h"
 
-class GameScene : public Scene
+class GameScene : public RGL::Scene
 {
 public:
-	GameScene(std::weak_ptr<RenderManager> render, const std::string &name);
+	GameScene(std::weak_ptr<RGL::RenderManager> render, const std::string &name);
 	~GameScene();
 
 	void Update(float delta);
     void Draw();
+
+private:
+    Square *_square;
 };
 
 #endif

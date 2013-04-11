@@ -19,6 +19,8 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="State\StateManager.cpp" />
     <ClCompile Include="State\State.cpp" />
+    <ClCompile Include="Container\Surface.cpp" />
+    <ClCompile Include="Container\Texture.cpp" />
     <ClCompile Include="Window\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +33,8 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="State\StateManager.h" />
     <ClInclude Include="State\State.h" />
+    <ClInclude Include="Container\Surface.h" />
+    <ClInclude Include="Container\Texture.h" />
     <ClInclude Include="Window\WindowManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
