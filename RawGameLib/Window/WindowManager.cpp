@@ -1,74 +1,54 @@
 #include "WindowManager.h"
 
-namespace RGL {
-
-	bool WindowManager::_isInitialized = false;
+namespace RGL
+{
 
     WindowManager::WindowManager()
-        : _window(std::unique_ptr<SDL_Window, void (*)(SDL_Window *)>(nullptr, SDL_DestroyWindow)),
-        _renderer(std::unique_ptr<SDL_Renderer, void (*)(SDL_Renderer *)>(nullptr, SDL_DestroyRenderer)),
-        _box(SDL_Rect())
+        : _isInitialized(false),
+        _window(std::unique_ptr<SDL_Window, void (*)(SDL_Window *)>(nullptr, SDL_DestroyWindow))
     {}
 
     WindowManager::~WindowManager()
     {}
 
-    int WindowManager::Initialize(std::string title, unsigned int width, unsigned int height)
+    ReturnValue WindowManager::Initialize(std::string title, unsigned int width, unsigned int height)
     {
         if (_isInitialized)
-            return 0;
-
-        if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
-            return 1;
+            return R_ERR_ALREADY_INITIALIZED;
 
         _window.reset(SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, 
             height, SDL_WINDOW_SHOWN));
         if (_window == nullptr)
-            return 2;
-
-        _renderer.reset(SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-        if (_renderer == nullptr)
-            return 3;
-
-		SDL_SetRenderDrawColor(_renderer.get(), 0, 0, 0, 255);
+            return R_ERR_SDL_CREATE_WINDOW;
 
         SDL_Rect box = { 0, 0, width, height };
         _box = box;
 
         _isInitialized = true;
 
-        return 0;
+        return R_OK;
     }
 
-    void WindowManager::Finish()
+    ReturnValue WindowManager::Finish()
     {
         if (!_isInitialized)
-            return;
+            return R_ERR_NOT_INITIALIZAED;
 
-        _renderer.~unique_ptr();
         _window.~unique_ptr();
 
-        SDL_Quit();
+        _box = SDL_Rect();
 
         _isInitialized = false;
+
+        return R_OK;
     }
 
-    void WindowManager::Draw(SDL_Texture *texture, const SDL_Rect &sourceRect, const SDL_Rect &destRect)
+    SDL_Window *WindowManager::Window()
     {
-        SDL_RenderCopy(_renderer.get(), texture, &sourceRect, &destRect);
-    }
-    
-    void WindowManager::Clear()
-    {
-        SDL_RenderClear(_renderer.get());
+        return _window.get();
     }
 
-    void WindowManager::Present()
-    {
-        SDL_RenderPresent(_renderer.get());
-    }
-
-    SDL_Rect WindowManager::Box()
+    SDL_Rect WindowManager::WindowBox()
     {
         return _box;
     }

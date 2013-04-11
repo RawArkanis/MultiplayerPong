@@ -2,8 +2,8 @@
 
 namespace RGL {
 
-    Scene::Scene(std::weak_ptr<WindowManager> window, const std::string &name)
-        : _window(window),
+    Scene::Scene(std::weak_ptr<RenderManager> render, const std::string &name)
+        : _render(render),
 		_name(name)
     {
     }

@@ -8,7 +8,7 @@ using namespace RGL;
 class GameScene : public Scene
 {
 public:
-	GameScene(std::weak_ptr<WindowManager> window, const std::string &name);
+	GameScene(std::weak_ptr<RenderManager> render, const std::string &name);
 	~GameScene();
 
 	void Update(float delta);

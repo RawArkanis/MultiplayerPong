@@ -1,6 +1,8 @@
 #include "Program.h"
 
+#include <RGLManager.h>
 #include <Window/WindowManager.h>
+#include <Render/RenderManager.h>
 #include <Input/InputManager.h>
 #include <Scene/SceneManager.h>
 
@@ -10,22 +12,29 @@ using namespace RGL;
 
 int Program::Main(const std::vector<std::string> &args)
 {
-	int exit = false;
-    std::shared_ptr<WindowManager> window(new WindowManager());
+    RGLManager rgl;
 
+    if (rgl.Initialize() != R_OK)
+        return 1;
+
+    auto window = std::make_shared<WindowManager>();
     window->Initialize(GAME_NAME, SCREEN_WIDTH, SCREEN_HEIGHT);
-	
-	InputManager input;
 
-	std::shared_ptr<Scene> gameScene(new GameScene(std::weak_ptr<WindowManager>(window), "GameScene")); 
+    auto render = std::make_shared<RenderManager>();
+    render->Initialize(window);
+
+    auto input = std::make_shared<InputManager>();
+    input->Initialize();
+
+	auto gameScene = std::make_shared<GameScene>(std::weak_ptr<RenderManager>(render), "GameScene"); 
 
 	SceneManager sceneManager;
 	sceneManager.AddScene(gameScene);
 	sceneManager.ChangeCurrentScene("GameScene");
 
-	while (!input.MustQuit())
+    while (!input->MustQuit())
 	{
-		input.Update();
+        input->Update();
 		sceneManager.Update(0.0f);
 
 		sceneManager.Draw();
@@ -33,7 +42,9 @@ int Program::Main(const std::vector<std::string> &args)
 		SDL_Delay(500);
 	}
 
+    render->Finish();
     window->Finish();
+    rgl.Finish();
 
     return 0;
 }

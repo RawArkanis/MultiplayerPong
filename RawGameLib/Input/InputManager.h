@@ -5,19 +5,24 @@
 
 namespace RGL {
 
-	class InputManager // TODO permitir apenas uma instancia
+	class InputManager
 	{
 	public:
 		InputManager();
 		~InputManager();
 
-		void Update();
+        ReturnValue Initialize();
+        ReturnValue Finish();
+
+		ReturnValue Update();
 
 		bool KeyPress(int keyCode);
 
 		bool MustQuit();
 
 	private:
+        bool _isInitialized;
+
 		bool _mustQuit;
 
 		Uint8 *_keys; 

@@ -1,9 +1,9 @@
 #include "GameScene.h"
 
-#include <Window/WindowManager.h>
+#include <Render/RenderManager.h>
 
-GameScene::GameScene(std::weak_ptr<WindowManager> window, const std::string &name)
-	: Scene(window, name)
+GameScene::GameScene(std::weak_ptr<RenderManager> render, const std::string &name)
+	: Scene(render, name)
 {
 }
 
@@ -17,9 +17,9 @@ void GameScene::Update(float delta)
 
 void GameScene::Draw()
 {
-	auto window = _window.lock();
+	auto render = _render.lock();
 
-	window->Clear();
+	render->Clear();
 
-	window->Present();
+	render->Present();
 }

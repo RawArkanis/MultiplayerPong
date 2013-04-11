@@ -5,12 +5,12 @@
 
 namespace RGL {
 
-	class WindowManager;
+	class RenderManager;
 
     class Scene
     {
     public:
-        Scene(std::weak_ptr<WindowManager> window, const std::string &name);
+        Scene(std::weak_ptr<RenderManager> render, const std::string &name);
         ~Scene();
 
         std::string Name() const;
@@ -19,7 +19,7 @@ namespace RGL {
         virtual void Draw() = 0;
 
     protected:
-		std::weak_ptr<WindowManager> _window;
+		std::weak_ptr<RenderManager> _render;
 
         std::string _name;
     };

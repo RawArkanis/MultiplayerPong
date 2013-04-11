@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Render\RenderManager.cpp" />
+    <ClCompile Include="RGLManager.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="State\StateManager.cpp" />
@@ -23,6 +25,8 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Render\RenderManager.h" />
+    <ClInclude Include="RGLManager.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="State\StateManager.h" />
