@@ -39,7 +39,7 @@ int Program::Main(const std::vector<std::string> &args)
 
 		sceneManager.Draw();
 
-		SDL_Delay(500);
+		SDL_Delay(10);
 	}
 
     render->Finish();

@@ -9,11 +9,7 @@ Square::Square(std::weak_ptr<RenderManager> render, const SDL_Rect &rect, const 
     : Entity(render, rect),
     _texture(nullptr)
 {
-    SDL_Rect squareRect = rect;
-    squareRect.x +=1;
-    squareRect.y +=1;
-    squareRect.w +=1;
-    squareRect.w +=1;
+    SDL_Rect squareRect = { rect.x + 1, rect.y + 1, rect.w - 2, rect.h - 2 };
 
     auto surface = std::make_shared<Surface>();
     surface->CreateRGB(rect);

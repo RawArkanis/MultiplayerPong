@@ -18,9 +18,9 @@ TileMap::~TileMap()
 
 void TileMap::generate()
 {
-    _tiles.reserve(_cols);
+    /*_tiles.reserve(_cols);
     for (int i = 0; i < _cols; i++)
-        _tiles[i].reserve(_rows);
+        _tiles[i].reserve(_rows);*/
 
 	for (int i = 0; i < _cols; i++)
     {
