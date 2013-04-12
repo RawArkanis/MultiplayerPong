@@ -12,8 +12,14 @@ namespace RGL
         Texture();
         ~Texture();
 
-    private:
+        ReturnValue Create(SDL_Texture *texture);
 
+        SDL_Texture *SDLTexture() const;
+
+    private:
+        bool _isCreated;
+
+        std::unique_ptr<SDL_Texture, void (*)(SDL_Texture *)> _texture;
 
     };
 

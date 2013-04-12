@@ -3,6 +3,7 @@
 #define __SQUARE_H__
 
 #include <Entity/Entity.h>
+#include <Container/Texture.h>
 
 #include "../Common.h"
 
@@ -13,10 +14,10 @@ public:
 	~Square();
 
 	void Update(double delta);
-	void Draw();
+	void Draw(const SDL_Rect &rect);
 
 private:
-    SDL_Texture *texture;
+    std::shared_ptr<RGL::Texture> _texture;
 
 };
 

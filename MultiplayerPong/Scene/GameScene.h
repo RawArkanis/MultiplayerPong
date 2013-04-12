@@ -4,7 +4,7 @@
 #include <Scene/Scene.h>
 
 #include "../Common.h"
-#include "../Entity/Square.h"
+#include "../Map/TileMap.h"
 
 class GameScene : public RGL::Scene
 {
@@ -16,7 +16,9 @@ public:
     void Draw();
 
 private:
-    Square *_square;
+    std::weak_ptr<RGL::RenderManager> _render;
+
+    std::unique_ptr<TileMap> _map;
 };
 
 #endif

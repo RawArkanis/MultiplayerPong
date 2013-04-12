@@ -80,12 +80,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Map\Tile.cpp" />
+    <ClCompile Include="Map\TileMap.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Entity\Square.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Map\Tile.h" />
+    <ClInclude Include="Map\TileMap.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Entity\Square.h" />

@@ -2,6 +2,7 @@
 
 #include "../Window/WindowManager.h"
 #include "../Container/Surface.h"
+#include "../Container/Texture.h"
 
 namespace RGL
 {
@@ -44,19 +45,24 @@ namespace RGL
         return R_OK;
     }
 
-    SDL_Texture *RenderManager::CreateTextureFromSurface(std::weak_ptr<Surface> surface)
+    std::shared_ptr<Texture> RenderManager::CreateTextureFromSurface(std::weak_ptr<Surface> surface)
     {
         auto surf = surface.lock();
 
-        return SDL_CreateTextureFromSurface(_renderer.get(), surf.get()->SDLSurface());
+        auto texture = std::make_shared<Texture>();
+        texture->Create(SDL_CreateTextureFromSurface(_renderer.get(), surf.get()->SDLSurface()));
+
+        return texture;
     }
 
-    ReturnValue RenderManager::Draw(SDL_Texture *texture, const SDL_Rect &sourceRect, const SDL_Rect &destRect)
+    ReturnValue RenderManager::Draw(std::weak_ptr<Texture> texture, const SDL_Rect &sourceRect, const SDL_Rect &destRect)
     {
         if (!_isInitialized)
             return R_ERR_NOT_INITIALIZAED;
 
-        SDL_RenderCopy(_renderer.get(), texture, &sourceRect, &destRect);
+        auto tex = texture.lock();
+
+        SDL_RenderCopy(_renderer.get(), tex->SDLTexture(), &sourceRect, &destRect);
 
         return R_OK;
     }

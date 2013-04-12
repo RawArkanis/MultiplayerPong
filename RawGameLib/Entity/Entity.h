@@ -17,7 +17,7 @@ namespace RGL {
 		void Rect(const SDL_Rect &rect);
 
 		virtual void Update(double delta) = 0;
-		virtual void Draw() = 0;
+		virtual void Draw(const SDL_Rect& rect) = 0;
 
 	protected:
 		std::weak_ptr<RenderManager> _render;
