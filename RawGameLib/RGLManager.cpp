@@ -24,6 +24,9 @@ namespace RGL
         if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
             return R_ERR_SDL_INIT;
 
+        if (TTF_Init() == -1)
+            return R_ERR_TTF_INIT;
+
         _isInitialized = true;
 
         return R_OK;

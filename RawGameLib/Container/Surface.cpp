@@ -25,6 +25,18 @@ namespace RGL
         return R_OK;
     }
 
+    ReturnValue Surface::CreateText(TTF_Font *font, const std::string &text, const SDL_Color &color)
+    {
+        if (_isCreated)
+            return R_ERR_ALREADY_CREATED;
+
+        _surface.reset(TTF_RenderText_Blended(font, text.c_str(), color));
+
+        _isCreated = true;
+
+        return R_OK;
+    }
+
     ReturnValue Surface::Fill(const SDL_Rect &rect, const SDL_Color &color)
     {
         if (!_isCreated)

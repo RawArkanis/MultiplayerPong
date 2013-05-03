@@ -13,6 +13,7 @@ namespace RGL
         ~Surface();
 
         ReturnValue CreateRGB(const SDL_Rect &rect);
+        ReturnValue CreateText(TTF_Font *font, const std::string &text, const SDL_Color &color);
 
         ReturnValue Fill(const SDL_Rect &rect, const SDL_Color &color);
 

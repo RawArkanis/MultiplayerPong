@@ -21,6 +21,7 @@
     <ClCompile Include="State\State.cpp" />
     <ClCompile Include="Container\Surface.cpp" />
     <ClCompile Include="Container\Texture.cpp" />
+    <ClCompile Include="Text\TextDisplay.cpp" />
     <ClCompile Include="Window\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +36,7 @@
     <ClInclude Include="State\State.h" />
     <ClInclude Include="Container\Surface.h" />
     <ClInclude Include="Container\Texture.h" />
+    <ClInclude Include="Text\TextDisplay.h" />
     <ClInclude Include="Window\WindowManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -87,7 +89,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2\SDL.lib;SDL2\SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2\SDL2.lib;SDL2\SDL2main.lib;SDL2_ttf\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -107,7 +109,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2\SDL.lib;SDL2\SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2\SDL2.lib;SDL2\SDL2main.lib;SDL2_ttf\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -5,6 +5,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiplayerPong", "Multipla
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RawGameLib", "RawGameLib\RawGameLib.vcxproj", "{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiplayerPongServer", "MultiplayerPongServer\MultiplayerPongServer.vcxproj", "{37BA48AA-391F-49CC-A387-A4295DA1D602}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProtocolsLib", "ProtocolsLib\ProtocolsLib.vcxproj", "{4B2A0C45-1F6B-44D9-944A-08B55F371FB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +23,14 @@ Global
 		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Debug|Win32.Build.0 = Debug|Win32
 		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Release|Win32.ActiveCfg = Release|Win32
 		{F1EFE53C-2BBE-4393-8E33-672CDF8DE0CE}.Release|Win32.Build.0 = Release|Win32
+		{37BA48AA-391F-49CC-A387-A4295DA1D602}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37BA48AA-391F-49CC-A387-A4295DA1D602}.Debug|Win32.Build.0 = Debug|Win32
+		{37BA48AA-391F-49CC-A387-A4295DA1D602}.Release|Win32.ActiveCfg = Release|Win32
+		{37BA48AA-391F-49CC-A387-A4295DA1D602}.Release|Win32.Build.0 = Release|Win32
+		{4B2A0C45-1F6B-44D9-944A-08B55F371FB5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4B2A0C45-1F6B-44D9-944A-08B55F371FB5}.Debug|Win32.Build.0 = Debug|Win32
+		{4B2A0C45-1F6B-44D9-944A-08B55F371FB5}.Release|Win32.ActiveCfg = Release|Win32
+		{4B2A0C45-1F6B-44D9-944A-08B55F371FB5}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

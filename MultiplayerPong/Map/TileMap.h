@@ -27,9 +27,12 @@ public:
 	int GetCols();
 	int GetRows();
 
+    void SetEntityPosition(std::string name, SDL_Point point);
 	SDL_Point GetEntityPosition(std::string name);
 
 	void MoveEntity(std::string name, MoveType type);
+
+    void SetInit(bool value);
 
     void Update(float delta);
     void Draw();
@@ -46,8 +49,11 @@ private:
     std::map<TileType, std::shared_ptr<Square> > _squares;
     std::map<std::string, SDL_Point> _entityPosition;
 
+    bool _init;
+
     void generate();
     void buildSquares();
+	void buildPlayerAndBall();
 
 };
 
