@@ -207,32 +207,22 @@ void GameScene::Update(float delta)
 		if (delta >= 1000/FPS/2)
 		{
 			std::string player;
-			int keyUP;
-			int keyDOWN;
 
 			if (_id == 1)
-			{
 				player = "Player1";
-				keyUP = SDL_SCANCODE_W;
-				keyDOWN = SDL_SCANCODE_S;
-			}
 			else
-			{
 				player = "Player2";
-				keyUP = SDL_SCANCODE_I;
-				keyDOWN = SDL_SCANCODE_K;
-			}
 
 			SDL_Point pos = _map->GetEntityPosition(player);
         
 			bool keyPressed = false;
 
-			if(input->KeyPress(keyUP))
+			if(input->KeyPress(SDL_SCANCODE_W))
 			{
 				_map->MoveEntity(player, MT_UP);
 				keyPressed = true;
 			}
-			else if (input->KeyPress(keyDOWN))
+			else if (input->KeyPress(SDL_SCANCODE_S))
 			{
 				_map->MoveEntity(player, MT_DOWN);
 				keyPressed = true;
