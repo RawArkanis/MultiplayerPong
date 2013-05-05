@@ -16,10 +16,8 @@ GameScene::GameScene(std::weak_ptr<SceneManager> manager, std::weak_ptr<RenderMa
     _player2Score(nullptr),
     _message(nullptr),
     _sock(sock),
-    _state(GS_Wait),
+    _state(GS_Ready),
     _id(0),
-    _ballVX(0),
-    _ballVY(0),
     _scoreP1(0),
     _scoreP2(0),
     _error(false)
@@ -31,7 +29,7 @@ GameScene::GameScene(std::weak_ptr<SceneManager> manager, std::weak_ptr<RenderMa
     _player1Score.reset(new TextDisplay(render, "Score: 0", "font.ttf", white, 12));
     _player2Score.reset(new TextDisplay(render, "Score: 0", "font.ttf", white, 12));
 
-    _message.reset(new TextDisplay(render, "Waiting for another player...", "font.ttf", white, 16));
+    _message.reset(new TextDisplay(render, "Press 'Space' if you're ready!", "font.ttf", white, 16));
 }
 
 GameScene::~GameScene()
@@ -44,7 +42,36 @@ void GameScene::Update(float delta)
     std::vector<char> data;
     auto sock = _sock.lock();
 
-    if (_state == GS_Wait)
+    if (_state == GS_Ready)
+    {
+        auto input = _input.lock();
+
+        if(input->KeyPress(SDL_SCANCODE_SPACE))
+			{
+                _message->Text("Waiting for the another player...");
+
+                _id = 0;
+                _scoreP1 = 0;
+                _scoreP2 = 0;
+                _error = false;
+
+                _player1Score->Text("Score: " + std::to_string(_scoreP1));
+                _player2Score->Text("Score: " + std::to_string(_scoreP2));
+
+                SDL_Point p1pos = { PLAYER1_X, PLAYER1_Y };
+                SDL_Point p2pos = { PLAYER2_X, PLAYER2_Y };
+
+                _map->SetEntityPosition("Player1", p1pos);
+                _map->SetEntityPosition("Player2", p2pos);
+
+                package = MakeReadyPackage();
+
+				sock->Send(package);
+
+                _state = GS_Wait;    	
+			}
+    }
+    else if (_state == GS_Wait)
     {
         sock->Receive(package);
 
@@ -58,12 +85,12 @@ void GameScene::Update(float delta)
 
             if (ParsePackage(package, data) != PACKAGE_TYPE_INIT)
             {
-				_message->Text("Invalid package received! [" + PrintPackage(package) + "]");
+				_message->Text("Invalid package received! [" + PrintPackage(package) + "] (2)");
                 _error = true;
                 return;
             }
 
-            ParseInitData(data, _id, ballx, bally, _ballVX, _ballVY);
+            ParseInitData(data, _id, ballx, bally);
 
             SDL_Point ball = { ballx, bally };
             _map->SetEntityPosition("Ball", ball);
@@ -105,10 +132,10 @@ void GameScene::Update(float delta)
 					break;
 				}
 
-			case PACKAGE_TYPE_BALL_COLLISION:
+			case PACKAGE_TYPE_BALL:
 				{
 					int bx, by;
-					ParseBallData(data, bx, by, _ballVX, _ballVY);
+					ParseBallData(data, bx, by);
 
 					SDL_Point bpos = { bx, by };
 					_map->SetEntityPosition("Ball", bpos);
@@ -120,7 +147,7 @@ void GameScene::Update(float delta)
             {
                 int id, bx, by;
 
-                ParseScoreData(data, id, bx, by, _ballVX, _ballVY);
+                ParseScoreData(data, id, bx, by);
 
                 SDL_Point bpos = { bx, by };
                 _map->SetEntityPosition("Ball", bpos);
@@ -170,7 +197,7 @@ void GameScene::Update(float delta)
 
 			default:
 				{
-					_message->Text("Invalid package received! [" + PrintPackage(package) + "]");
+					_message->Text("Invalid package received! [" + PrintPackage(package) + "] (1)");
 					_error = true;
 					break;
 				}
@@ -218,22 +245,21 @@ void GameScene::Update(float delta)
 				{
 					package = MakeMovePackage(_id, pos2.x, pos2.y);
 
-					_message->Text(PrintPackage(package));
-					_error = true;
-
 					sock->Send(package);
 				}
 			}
 		}
+    }
+    else if (_state == GS_End)
+    {
+        auto input = _input.lock();
 
-		if (delta >= 1000/FPS)
-		{
-			SDL_Point pos = _map->GetEntityPosition("Ball");
-			pos.x += _ballVX;
-			pos.y += _ballVY;
+        if(input->KeyPress(SDL_SCANCODE_SPACE))
+        {
+            _message->Text("Press 'Space' if you're ready!");
 
-			_map->SetEntityPosition("Ball", pos);
-		}
+            _state = GS_Ready;
+        }
     }
 }
 
@@ -253,7 +279,7 @@ void GameScene::Draw()
 
     _player2Score->Draw(p2_rect);
 
-    if (_state == GS_Wait || _state == GS_End || _error)
+    if (_state == GS_Ready || _state == GS_Wait || _state == GS_End || _error)
     {
         SDL_Rect m_rect = _message->Rect();
         m_rect.x = SCREEN_WIDTH / 2 - m_rect.w / 2;

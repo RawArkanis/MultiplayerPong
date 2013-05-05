@@ -56,10 +56,10 @@ void TileMap::buildSquares()
 
 void TileMap::buildPlayerAndBall()
 {
-	SDL_Point player1 = { 2, 2 };
+	SDL_Point player1 = { 0, 0 };
 	_entityPosition["Player1"] = player1;
 
-	SDL_Point player2 = { 97, 61 };
+	SDL_Point player2 = { 0, 0 };
 	_entityPosition["Player2"] = player2;
 
 	SDL_Point ball = { 0, 0 };

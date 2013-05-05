@@ -102,7 +102,7 @@ WSReturn TCPSock::Send(const std::vector<char> &data)
 		return WS_ERR_NOT_OPEN;
 
 	char temp[MAX_BUFF_SIZE];
-	for (int i = 0; i < data.size(); i++)
+	for (unsigned int i = 0; i < data.size(); i++)
 		temp[i] = data[i];
 
     if(send(_socket, temp, data.size(), 0) != SOCKET_ERROR)

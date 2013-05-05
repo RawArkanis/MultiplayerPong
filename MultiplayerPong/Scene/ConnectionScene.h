@@ -26,13 +26,15 @@ public:
 	void Update(float delta);
     void Draw();
 
-    void SerIP(const std::string &ip);
+    void SetIP(const std::string &ip);
+    void SetPortt(int port);
 
 private:
     std::unique_ptr<RGL::TextDisplay> _text;
     std::weak_ptr<TCPSock> _sock;
 
     std::string _ip;
+    int _port;
     
     ConnectionState _state;
 };

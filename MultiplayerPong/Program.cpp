@@ -16,6 +16,19 @@ using namespace RGL;
 
 int Program::Main(const std::vector<std::string> &args)
 {
+    int port = PORT;
+    std::string host = HOST;
+
+    if (args.size() >= 3)
+    {
+        host = args[1];
+        port = atoi(args[2].c_str());
+    }
+    else if (args.size() == 2)
+    {
+        host = args[1];
+    }
+
     RGLManager rgl;
 
     if (rgl.Initialize() != R_OK)
@@ -36,7 +49,8 @@ int Program::Main(const std::vector<std::string> &args)
 
     auto connScene = std::make_shared<ConnectionScene>(std::weak_ptr<SceneManager>(sceneManager), std::weak_ptr<RenderManager>(render),
         std::weak_ptr<InputManager>(input), "ConnectionScene", std::weak_ptr<TCPSock>(sock));
-    connScene->SerIP(args[1]);
+    connScene->SetIP(host);
+    connScene->SetPortt(port);
 	auto gameScene = std::make_shared<GameScene>(std::weak_ptr<SceneManager>(sceneManager), std::weak_ptr<RenderManager>(render),
         std::weak_ptr<InputManager>(input), "GameScene", std::weak_ptr<TCPSock>(sock)); 
 
@@ -76,11 +90,6 @@ int Program::Main(const std::vector<std::string> &args)
 int main(int argc, char** argv)
 {
     std::vector<std::string> args(argv, argv + argc);
-    if (args.size() <= 1)
-    {
-        std::cerr << "Use 'MultiplayerPong <IP_Address>'" << std::endl;
-        return 1;
-    }
 
     Program prog;
     return prog.Main(args);

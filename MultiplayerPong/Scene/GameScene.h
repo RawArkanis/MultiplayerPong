@@ -12,6 +12,7 @@
 class TCPSock;
 
 enum GameState {
+    GS_Ready,
     GS_Wait,
     GS_Play,
     GS_End
@@ -39,8 +40,6 @@ private:
     GameState _state;
 
     int _id;
-    int _ballVX;
-    int _ballVY;
 
     int _scoreP1;
     int _scoreP2;

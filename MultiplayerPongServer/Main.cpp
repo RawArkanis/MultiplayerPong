@@ -8,6 +8,7 @@
 
 enum GameState
 {
+    GS_READY,
     GS_WAIT,
     GS_PLAY
 };
@@ -23,7 +24,7 @@ int main(int argc, char **argv)
     TCPSock sconn;
     TCPSock *sc1, *sc2;
 
-    GameState state = GS_WAIT;
+    GameState state = GS_READY;
 
 	std::vector<char> buffer1, buffer2;
 
@@ -78,28 +79,19 @@ int main(int argc, char **argv)
 
 	Map map;
 
-    Entity ball(0, 49, 37, 1, 1);
+    Entity ball(0, 0, 0, BALL_SIZE, BALL_SIZE);
 
-    int ballVX = rand() % 2 == 0 ? -2 : 2;
-    int ballVY = rand() % 5 - 2;
+    Entity player1(1, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT);
+    Entity player2(2, 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT);
 
-    Entity player1(1, 2, 2, 1, 12);
-    Entity player2(2, 97, 61, 1, 12);
+    int ballVX = 0;
+    int ballVY = 0;
 
     int scoreP1 = 0;
     int scoreP2 = 0;
 
-    int ballX, ballY;
-    ball.GetPosition(ballX, ballY);
-
-    std::vector<char> package_p1(MakeInitPackage(1, ballX, ballY, ballVX, ballVY));
-    std::vector<char> package_p2(MakeInitPackage(2, ballX, ballY, ballVX, ballVY));
-
-    std::cout << "Sending INIT pack to C1: " << PrintPackage(package_p1) << std::endl;
-    std::cout << "Sending INIT pack to C2: " << PrintPackage(package_p2) << std::endl;
-
-    sc1->Send(package_p1);
-    sc2->Send(package_p2);
+    bool p1Ready = false;
+    bool p2Ready = false; 
 
     int lastTime = 0;
 	int currentTime = 0, deltaTime = 0;
@@ -133,9 +125,17 @@ int main(int argc, char **argv)
 
             std::cout << "Received data from C1: " << PrintPackage(pack_c1) << std::endl;
 
-            if (ParsePackage(pack_c1, data) == PACKAGE_TYPE_PLAYER_MOVE)
+            switch (ParsePackage(pack_c1, data))
             {
-                ProcessMovement(data, player1, sc2);
+            case PACKAGE_TYPE_PLAYER_MOVE:
+                if (state == GS_PLAY)
+                    ProcessMovement(data, player1, sc2);
+                break;
+            
+            case PACKAGE_TYPE_READY:
+                if (state == GS_READY)
+                    p1Ready = true;
+                break;
             }
         }
 
@@ -145,19 +145,58 @@ int main(int argc, char **argv)
 
             std::cout << "Received data from C2: " << PrintPackage(pack_c2) << std::endl;
 
-            if (ParsePackage(pack_c2, data) == PACKAGE_TYPE_PLAYER_MOVE)
+            switch (ParsePackage(pack_c2, data))
             {
-               ProcessMovement(data, player2, sc1);
+            case PACKAGE_TYPE_PLAYER_MOVE:
+                if (state == GS_PLAY)
+                    ProcessMovement(data, player2, sc1);
+                break;
+
+            case PACKAGE_TYPE_READY:
+                if (state == GS_READY)
+                    p2Ready = true;
+                break;
             }
+        }
+
+        if (state == GS_READY && p1Ready && p2Ready)
+        {
+            ball.SetPosition(BALL_X, BALL_Y);
+
+            player1.SetPosition(PLAYER1_X, PLAYER1_Y);
+            player2.SetPosition(PLAYER2_X, PLAYER2_Y);
+
+            ballVX = rand() % 2 == 0 ? -2 : 2;
+            ballVY = rand() % 5 - 2;
+
+            scoreP1 = 0;
+            scoreP2 = 0;
+
+            int ballX, ballY;
+            ball.GetPosition(ballX, ballY);
+
+            std::vector<char> package_p1(MakeInitPackage(1, ballX, ballY));
+            std::vector<char> package_p2(MakeInitPackage(2, ballX, ballY));
+
+            std::cout << "Sending INIT pack to C1: " << PrintPackage(package_p1) << std::endl;
+            std::cout << "Sending INIT pack to C2: " << PrintPackage(package_p2) << std::endl;
+
+            sc1->Send(package_p1);
+            sc2->Send(package_p2);
+
+            p1Ready = false;
+            p2Ready = false;
+
+            state = GS_PLAY;
         }
 
 		if (deltaTime >= 1000/FPS)
 		{
-			if (!ended)
+			if (state == GS_PLAY)
                 ProcessBallMovement(ball, map, player1, player2, ballVX, ballVY, scoreP1, scoreP2, sc1, sc2);
 
             if (scoreP1 >= MAX_SCORE || scoreP2 >= MAX_SCORE)
-                ended = true;
+                state = GS_READY;
 
 			deltaTime = 0;
 		}
@@ -197,7 +236,6 @@ void ProcessBallMovement(Entity &ball, Map &map, Entity &p1, Entity &p2, int &ba
     int ySteps = abs(ballVY);
     int steps = max(xSteps, ySteps);
 
-    bool collided = false;
     int score = 0;
 
     for (int i = 0; i < steps; i++)
@@ -218,7 +256,6 @@ void ProcessBallMovement(Entity &ball, Map &map, Entity &p1, Entity &p2, int &ba
 			ballVY = -ballVY;
             x += ix * xSignal;
             y = y0;
-			collided = true;
 			break;
 
 		case TT_LeftWall:
@@ -257,8 +294,6 @@ void ProcessBallMovement(Entity &ball, Map &map, Entity &p1, Entity &p2, int &ba
                 else if (vy > 2)
                     vy = 2;
                 ballVY = vy;
-
-                collided = true;
             }
             break;
 		}
@@ -269,16 +304,16 @@ void ProcessBallMovement(Entity &ball, Map &map, Entity &p1, Entity &p2, int &ba
 
 	ball.SetPosition(x, y);
 
-	if(collided)
+	if(score == 0)
 	{
-		std::vector<char> msg(MakeBallPackage(x, y, ballVX, ballVY));
+		std::vector<char> msg(MakeBallPackage(x, y));
 
         std::cout << "Sending BALL pack to C1 and C2: " << PrintPackage(msg) << std::endl;
 
         sock_c1->Send(msg);
 		sock_c2->Send(msg);
 	}
-    else if (score != 0)
+    else
     {
         int s;
 
@@ -295,14 +330,14 @@ void ProcessBallMovement(Entity &ball, Map &map, Entity &p1, Entity &p2, int &ba
 
         if (s < MAX_SCORE)
         {
-            int bx = 49;
-            int by = 37;
+            int bx = BALL_X;
+            int by = BALL_Y;
             ballVX = rand() % 2 == 0 ? -2 : 2;
             ballVY = rand() % 5 -2;
 
             ball.SetPosition(bx, by);
 
-            std::vector<char> msg(MakeScorePackage(score, bx, by, ballVX, ballVY));
+            std::vector<char> msg(MakeScorePackage(score, bx, by));
 
             std::cout << "Sending SCORE pack to C1 and C2: " << PrintPackage(msg) << std::endl;
 
