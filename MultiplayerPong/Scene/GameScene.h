@@ -1,6 +1,8 @@
 #ifndef __GAME_SCENE_H__
 #define __GAME_SCENE_H__
 
+#include <vector>
+
 #include <Scene/Scene.h>
 #include <Text/TextDisplay.h>
 
@@ -12,8 +14,7 @@ class TCPSock;
 enum GameState {
     GS_Wait,
     GS_Play,
-    GS_Win,
-    GS_Lose
+    GS_End
 };
 
 class GameScene : public RGL::Scene
@@ -41,7 +42,12 @@ private:
     int _ballVX;
     int _ballVY;
 
+    int _scoreP1;
+    int _scoreP2;
+
     bool _error;
+
+	std::vector<char> _buffer;
 };
 
 #endif

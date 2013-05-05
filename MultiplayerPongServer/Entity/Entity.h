@@ -15,6 +15,8 @@ public:
     void SetSize(int w, int h);
     void GetSize(int &w, int &h);
 
+    int CheckBallCollision(int ballx, int bally);
+
 private:
     int _id;
     int _x;

@@ -96,12 +96,16 @@ TCPSock *TCPSock::Accept()
     return nullptr;
 }
 
-WSReturn TCPSock::Send(const std::string &data)
+WSReturn TCPSock::Send(const std::vector<char> &data)
 {
 	if (!_isOpen)
 		return WS_ERR_NOT_OPEN;
 
-    if(send(_socket, data.c_str(), data.length() + 1, 0) != SOCKET_ERROR)
+	char temp[MAX_BUFF_SIZE];
+	for (int i = 0; i < data.size(); i++)
+		temp[i] = data[i];
+
+    if(send(_socket, temp, data.size(), 0) != SOCKET_ERROR)
     {
         std::cout << "Information sent" << std::endl;
         return WS_OK;
@@ -110,7 +114,7 @@ WSReturn TCPSock::Send(const std::string &data)
     return (WSAGetLastError() == WSAEWOULDBLOCK) ? WS_ERR_WOULDBLOCK : WS_ERR_SEND;
 }
 
-WSReturn TCPSock::Receive(std::string &buff)
+WSReturn TCPSock::Receive(std::vector<char> &buff)
 {
 	if (!_isOpen)
 		return WS_ERR_NOT_OPEN;
@@ -120,7 +124,8 @@ WSReturn TCPSock::Receive(std::string &buff)
 
 	if((len = recv(_socket, temp, MAX_BUFF_SIZE, 0)) != SOCKET_ERROR)
 	{
-		buff = std::string(temp);
+		for (int i = 0; i < len; i++)
+			buff.push_back(temp[i]);
 
 		std::cout << "Information received" << std::endl;
 

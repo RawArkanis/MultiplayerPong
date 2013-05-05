@@ -1,10 +1,10 @@
 #include "GameScene.h"
-#include "../Utils.h"
 
 #include <Render/RenderManager.h>
 #include <Input/InputManager.h>
 
 #include <TCPSock.h>
+#include <Utils.h>
 
 using namespace RGL;
 
@@ -20,6 +20,8 @@ GameScene::GameScene(std::weak_ptr<SceneManager> manager, std::weak_ptr<RenderMa
     _id(0),
     _ballVX(0),
     _ballVY(0),
+    _scoreP1(0),
+    _scoreP2(0),
     _error(false)
 {
     _map.reset(new TileMap(render, ROWS, COLS));
@@ -38,20 +40,25 @@ GameScene::~GameScene()
 
 void GameScene::Update(float delta)
 {
-    std::string package;
-    std::string data;
+    std::vector<char> package;
+    std::vector<char> data;
     auto sock = _sock.lock();
 
     if (_state == GS_Wait)
     {
         sock->Receive(package);
-        if (package.length() > 0)
+
+		Bufferize(package, _buffer);
+		package.clear();
+		ProcessBuffer(_buffer, package);
+
+        if (package.size() > 0)
         {
             int ballx, bally;
 
             if (ParsePackage(package, data) != PACKAGE_TYPE_INIT)
             {
-                _message->Text("Invalid package received! [" + package + "]");
+				_message->Text("Invalid package received! [" + PrintPackage(package) + "]");
                 _error = true;
                 return;
             }
@@ -70,76 +77,163 @@ void GameScene::Update(float delta)
         auto input = _input.lock();
 
         sock->Receive(package);
-        if (package.length() > 0)
+
+		Bufferize(package, _buffer);
+		package.clear();
+		ProcessBuffer(_buffer, package);
+
+		if (package.size() > 0)
         {
-            if (ParsePackage(package, data) == PACKAGE_TYPE_PLAYER_MOVE)
+            switch (ParsePackage(package, data))
             {
-                int id, x, y;
-                ParseMoveData(data, id, x, y);
-                if (id == _id)
+			case PACKAGE_TYPE_PLAYER_MOVE:
+				{
+					int id, x, y;
+					ParseMoveData(data, id, x, y);
+                
+					if (id == _id)
+					{
+						_message->Text("Receive a move package that belong to another player! [" + PrintPackage(package) + "]");
+						_error = true;
+					}
+					else
+					{
+						SDL_Point ppos = { x, y };
+
+						_map->SetEntityPosition(id == 1 ? "Player1" : "Player2", ppos);
+					}
+					break;
+				}
+
+			case PACKAGE_TYPE_BALL_COLLISION:
+				{
+					int bx, by;
+					ParseBallData(data, bx, by, _ballVX, _ballVY);
+
+					SDL_Point bpos = { bx, by };
+					_map->SetEntityPosition("Ball", bpos);
+
+					break;
+				}
+			
+            case PACKAGE_TYPE_PLAYER_SCORE:
+            {
+                int id, bx, by;
+
+                ParseScoreData(data, id, bx, by, _ballVX, _ballVY);
+
+                SDL_Point bpos = { bx, by };
+                _map->SetEntityPosition("Ball", bpos);
+
+                if (id == 1)
                 {
-                    _message->Text("Receive a move package that belong to another player! [" + package + "]");
-                    _error = true;
+                    _scoreP1++;
+                    
+                    _player1Score->Text("Score: " + std::to_string(_scoreP1));
                 }
                 else
                 {
-                    SDL_Point pos = { x, y };
+                    _scoreP2++;
 
-                    _map->SetEntityPosition(id == 1 ? "Player1" : "Player2", pos);
+                    _player2Score->Text("Score: " + std::to_string(_scoreP2));
                 }
+
+                break;
             }
-            else
+            case PACKAGE_TYPE_END:
             {
-                _message->Text("Invalid package received! [" + package + "]");
-                _error = true;
+                int id;
+
+                ParseEndData(data, id);
+
+                if (id == 1)
+                {
+                    _scoreP1++;
+                    
+                    _player1Score->Text("Score: " + std::to_string(_scoreP1));
+                }
+                else
+                {
+                    _scoreP2++;
+
+                    _player2Score->Text("Score: " + std::to_string(_scoreP2));
+                }
+
+                if (id == _id)
+                    _message->Text("You won!!!");
+                else
+                    _message->Text("You lose!!!");
+
+                _state = GS_End;
+                break;
+            }
+
+			default:
+				{
+					_message->Text("Invalid package received! [" + PrintPackage(package) + "]");
+					_error = true;
+					break;
+				}
             }
         }
 
-        std::string player;
-        int keyUP;
-        int keyDOWN;
+		if (delta >= 1000/FPS/2)
+		{
+			std::string player;
+			int keyUP;
+			int keyDOWN;
 
-        if (_id == 1)
-        {
-            player = "Player1";
-            keyUP = SDL_SCANCODE_W;
-            keyDOWN = SDL_SCANCODE_S;
-        }
-        else
-        {
-            player = "Player2";
-            keyUP = SDL_SCANCODE_I;
-            keyDOWN = SDL_SCANCODE_K;
-        }
+			if (_id == 1)
+			{
+				player = "Player1";
+				keyUP = SDL_SCANCODE_W;
+				keyDOWN = SDL_SCANCODE_S;
+			}
+			else
+			{
+				player = "Player2";
+				keyUP = SDL_SCANCODE_I;
+				keyDOWN = SDL_SCANCODE_K;
+			}
 
-        SDL_Point pos = _map->GetEntityPosition(player);
+			SDL_Point pos = _map->GetEntityPosition(player);
         
-        bool keyPressed = false;
+			bool keyPressed = false;
 
-        if(input->KeyPress(keyUP))
-        {
-            _map->MoveEntity(player, MT_UP);
-            keyPressed = true;
-        }
-        else if (input->KeyPress(keyDOWN))
-        {
-            _map->MoveEntity(player, MT_DOWN);
-            keyPressed = true;
-        }
+			if(input->KeyPress(keyUP))
+			{
+				_map->MoveEntity(player, MT_UP);
+				keyPressed = true;
+			}
+			else if (input->KeyPress(keyDOWN))
+			{
+				_map->MoveEntity(player, MT_DOWN);
+				keyPressed = true;
+			}
 
-        if (keyPressed)
-        {
-            SDL_Point pos2 = _map->GetEntityPosition(player);
-            if (pos.y != pos2.y)
-            {
-                package = MakeMovePackage(_id, pos2.x, pos2.y);
+			if (keyPressed)
+			{
+				SDL_Point pos2 = _map->GetEntityPosition(player);
+				if (pos.y != pos2.y)
+				{
+					package = MakeMovePackage(_id, pos2.x, pos2.y);
 
-                _message->Text(string_to_hex(package));
-                _error = true;
+					_message->Text(PrintPackage(package));
+					_error = true;
 
-                sock->Send(package);
-            }
-        }
+					sock->Send(package);
+				}
+			}
+		}
+
+		if (delta >= 1000/FPS)
+		{
+			SDL_Point pos = _map->GetEntityPosition("Ball");
+			pos.x += _ballVX;
+			pos.y += _ballVY;
+
+			_map->SetEntityPosition("Ball", pos);
+		}
     }
 }
 
@@ -159,7 +253,7 @@ void GameScene::Draw()
 
     _player2Score->Draw(p2_rect);
 
-    if (_state == GS_Wait || _error)
+    if (_state == GS_Wait || _state == GS_End || _error)
     {
         SDL_Rect m_rect = _message->Rect();
         m_rect.x = SCREEN_WIDTH / 2 - m_rect.w / 2;

@@ -126,6 +126,10 @@ void TileMap::Update(float delta)
 
 void TileMap::Draw()
 {
+	SDL_Point ball = _entityPosition["Ball"];
+	SDL_Rect rect = { ball.x * _tileWidth, ball.y * _tileHeight, _tileWidth, _tileHeight };
+	_squares[TT_BallBrick]->Draw(rect);
+
 	for(int y = 0; y < _rows; y++)
 	{
 		for(int x = 0; x < _cols; x++)
@@ -154,9 +158,5 @@ void TileMap::Draw()
 		    SDL_Rect rect = { player2.x * _tileWidth, i * _tileHeight, _tileWidth, _tileHeight };
 		    _squares[TT_Player2Brick]->Draw(rect);
 	    }
-
-	    SDL_Point ball = _entityPosition["Ball"];
-	    SDL_Rect rect = { ball.x * _tileWidth, ball.y * _tileHeight, _tileWidth, _tileHeight };
-	    _squares[TT_BallBrick]->Draw(rect);
     }
 }

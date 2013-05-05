@@ -95,7 +95,6 @@
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Entity\Square.h" />
-    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProtocolsLib\ProtocolsLib.vcxproj">

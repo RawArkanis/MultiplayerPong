@@ -44,35 +44,26 @@ int Program::Main(const std::vector<std::string> &args)
 	sceneManager->AddScene(gameScene);
 	sceneManager->ChangeCurrentScene("ConnectionScene");
 
-    SDL_Color white = { 255, 255, 255, 255 };
-
-    TextDisplay fps(std::weak_ptr<RenderManager>(render), "FPS: 0", "font.ttf", white, 12);
-
-    int currentTime = 0, lastTime = 0, sleepTime = 0;
-    float deltaTime = 0.0f;
-	
-    lastTime = SDL_GetTicks();
+    int currentTime = 0, lastTime = 0;
+    int deltaTime = 0;
 
     while (!input->MustQuit())
 	{
+		currentTime = SDL_GetTicks();
+		deltaTime += currentTime - lastTime;
+		lastTime = currentTime;
+
         input->Update();
-		sceneManager->Update(0);
+		sceneManager->Update(deltaTime);
 
         render->Clear();
 
 		sceneManager->Draw();
 
-		fps.Text("FPS: " + std::to_string(0));
-
-        SDL_Rect rect = fps.Rect();
-        rect.y += SCREEN_HEIGHT - rect.h;
-        fps.Draw(rect);
-
         render->Present();
 
-        while (SDL_GetTicks() - lastTime < 1000 / FPS)
-		    SDL_Delay(0);
-        lastTime = SDL_GetTicks() ;
+		if (deltaTime >= 1000/FPS)
+			deltaTime = 0;
 	}
 
     render->Finish();

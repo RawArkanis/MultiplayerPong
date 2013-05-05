@@ -3,6 +3,8 @@
 
 #include "WinSock.h"
 
+#include <vector>
+
 class TCPSock : public WinSock
 {
 public:
@@ -16,8 +18,8 @@ public:
     WSReturn Connect(const std::string &address, int port);
     TCPSock *Accept();
 
-	WSReturn Send(const std::string &data);
-	WSReturn Receive(std::string &buff);
+	WSReturn Send(const std::vector<char> &data);
+	WSReturn Receive(std::vector<char> &buff);
 
 private:
     TCPSock(SOCKET sock);

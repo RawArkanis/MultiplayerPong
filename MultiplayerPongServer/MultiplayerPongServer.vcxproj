@@ -85,11 +85,12 @@
   <ItemGroup>
     <ClCompile Include="Entity\Entity.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Map\Map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="Entity\Entity.h" />
-    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Map\Map.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
